@@ -16,6 +16,11 @@ jobs:
           POSTGRESQL_USERNAME: docker
           POSTGRESQL_PASSWORD: docker
           POSTGRESQL_DATABASE: apisolid
+        options: >-
+          --health-cmd="pg_isready -U docker -d apisolid"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -29,13 +34,9 @@ jobs:
       
       - run: npm ci 
 
-      - run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://docker:docker@localhost:5432/apisolid
-
       - run: npm run test:e2e
         env:
           JWT_SECRET: test-jwt-secret
-          DATABASE_URL: "postgresql://docker:docker@localhost:5432/apisolid?schema=public"
+          DATABASE_URL: "postgresql://docker:docker@localhost:5432/apisolid"
 
       
