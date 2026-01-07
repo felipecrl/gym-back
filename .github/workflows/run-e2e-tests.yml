@@ -1,0 +1,43 @@
+name: Run E2E tests
+
+on: [pull_request]
+
+jobs:
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: bitnami/postgresql
+        ports:
+          - 5432:5432
+        env:
+          POSTGRESQL_USERNAME: docker
+          POSTGRESQL_PASSWORD: docker
+          POSTGRESQL_DATABASE: apisolid
+        options: >-
+          --health-cmd="pg_isready -U docker -d apisolid"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+      
+      - run: npm ci 
+
+      - run: npm run test:e2e -- --reporter=verbose --bail=1
+        env:
+          JWT_SECRET: test-jwt-secret
+          DATABASE_URL: "postgresql://docker:docker@localhost:5432/apisolid"
+        timeout-minutes: 10
+
+      
