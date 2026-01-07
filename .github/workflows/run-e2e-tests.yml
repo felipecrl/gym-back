@@ -34,9 +34,10 @@ jobs:
       
       - run: npm ci 
 
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --reporter=verbose --bail=1
         env:
           JWT_SECRET: test-jwt-secret
           DATABASE_URL: "postgresql://docker:docker@localhost:5432/apisolid"
+        timeout-minutes: 10
 
       

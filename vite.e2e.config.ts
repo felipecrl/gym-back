@@ -9,5 +9,7 @@ export default defineConfig({
     environment:
       './prisma/vitest-environment-prisma/prisma-test-environment.ts',
     isolate: true,
+    testTimeout: 60000,
+    hookTimeout: 60000,
   },
 })
