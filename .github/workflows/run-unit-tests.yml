@@ -19,6 +19,9 @@ jobs:
       
       - run: npm ci 
 
-      - run: npm run test
+      - run: npm run test:unit
+        env:
+          JWT_SECRET: test-jwt-secret
+          DATABASE_URL: postgresql://test:test@localhost:5432/testdb
 
       
